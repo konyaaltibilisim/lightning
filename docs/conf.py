@@ -111,7 +111,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 #
 # show_authors = False
 
-# The name of the Pygments (syntax highlighting) style to use.
+# The name of the Pygments style to use.
 pygments_style = 'sphinx'
 
 # A list of ignored prefixes for module index sorting.
