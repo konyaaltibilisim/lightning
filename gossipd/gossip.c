@@ -499,6 +499,7 @@ check_length:
 
 static void queue_peer_msg(struct peer *peer, const u8 *msg TAKES)
 {
+	assert(msg && tal_len(msg) > 0);
 	if (peer->local) {
 		msg_enqueue(&peer->local->peer_out, msg);
 	} else if (peer->remote) {
