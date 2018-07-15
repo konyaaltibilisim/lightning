@@ -18,25 +18,25 @@
  * there isn't any, or how many we expect.  -1 means "expect some", since
  * it can be platform dependent.
  */
-#define STRUCTEQ_DEF(sname, padbytes, ...)				\
-static inline bool CPPMAGIC_GLUE2(sname, _eq)(const struct sname *_a, \
-					      const struct sname *_b) \
-{									\
-	BUILD_ASSERT(((padbytes) < 0 &&					\
-		      CPPMAGIC_JOIN(+, CPPMAGIC_MAP(STRUCTEQ_MEMBER_SIZE_, \
-						    __VA_ARGS__))	\
-		      > sizeof(*_a))					\
-		     || CPPMAGIC_JOIN(+, CPPMAGIC_MAP(STRUCTEQ_MEMBER_SIZE_, \
-						      __VA_ARGS__))	\
-		     + (padbytes) == sizeof(*_a));			\
-	if (CPPMAGIC_JOIN(+, CPPMAGIC_MAP(STRUCTEQ_MEMBER_SIZE_, __VA_ARGS__)) \
-	    == sizeof(*_a))						\
-		return memcmp(_a, _b, sizeof(*_a)) == 0;		\
-	else								\
-		return CPPMAGIC_JOIN(&&,				\
-				     CPPMAGIC_MAP(STRUCTEQ_MEMBER_CMP_, \
-						  __VA_ARGS__));	\
-}
+#define STRUCTEQ_DEF(sname, padbytes, ...)                                     \
+  static inline bool CPPMAGIC_GLUE2(sname, _eq)(const struct sname *_a,        \
+                                                const struct sname *_b) {      \
+    if (_a == NULL || _b == NULL)                                              \
+      return _a == _b;                                                         \
+    BUILD_ASSERT(                                                              \
+        ((padbytes) < 0 &&                                                     \
+         CPPMAGIC_JOIN(+, CPPMAGIC_MAP(STRUCTEQ_MEMBER_SIZE_, __VA_ARGS__)) >  \
+             sizeof(*_a)) ||                                                   \
+        CPPMAGIC_JOIN(+, CPPMAGIC_MAP(STRUCTEQ_MEMBER_SIZE_, __VA_ARGS__)) +   \
+                (padbytes) ==                                                  \
+            sizeof(*_a));                                                      \
+    if (CPPMAGIC_JOIN(+, CPPMAGIC_MAP(STRUCTEQ_MEMBER_SIZE_, __VA_ARGS__)) ==  \
+        sizeof(*_a))                                                           \
+      return memcmp(_a, _b, sizeof(*_a)) == 0;                                 \
+    else                                                                       \
+      return CPPMAGIC_JOIN(&&,                                                 \
+                           CPPMAGIC_MAP(STRUCTEQ_MEMBER_CMP_, __VA_ARGS__));   \
+  }
 
 /* Helpers */
 #define STRUCTEQ_MEMBER_SIZE_(m) sizeof((_a)->m)
