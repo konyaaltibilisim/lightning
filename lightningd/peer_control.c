@@ -738,12 +738,16 @@ static void gossipd_getpeers_complete(struct subd *gossip, const u8 *msg,
 	struct gossip_getnodes_entry **nodes;
 	struct json_result *response = new_json_result(gpa->cmd);
 	struct peer *p;
+	size_t num_nodes;
 
 	if (!fromwire_gossip_getpeers_reply(msg, msg, &ids, &addrs, &nodes)) {
 		command_fail(gpa->cmd, LIGHTNINGD,
 			     "Bad response from gossipd");
 		return;
 	}
+	num_nodes = tal_count(nodes);
+	assert(tal_count(ids) == num_nodes);
+	assert(tal_count(addrs) == num_nodes);
 
 	/* First the peers not just gossiping. */
 	json_object_start(response, NULL);
@@ -780,7 +784,7 @@ static void gossipd_getpeers_complete(struct subd *gossip, const u8 *msg,
 		}
 
 		/* Search gossip reply for this ID, to add extra info. */
-		for (size_t i = 0; i < tal_len(nodes); i++) {
+		for (size_t i = 0; i < num_nodes; i++) {
 			if (pubkey_eq(&nodes[i]->nodeid, &p->id)) {
 				json_add_node_decoration(response, nodes[i]);
 				break;
