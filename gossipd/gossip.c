@@ -3575,9 +3575,9 @@ static struct io_plan *get_peers(struct io_conn *conn,
 		n++;
 	}
 
-	assert(tal_len(id) == n);
-	assert(tal_len(wireaddr) == n);
-	assert(tal_len(nodes) == n);
+	assert(tal_count(id) == n);
+	assert(tal_count(wireaddr) == n);
+	assert(tal_count(nodes) == n);
 
 	daemon_conn_send(&daemon->master,
 			 take(towire_gossip_getpeers_reply(NULL, id, wireaddr, nodes)));
